@@ -7,7 +7,9 @@
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:visibility="visible"
+    android:background="@drawable/gradient_background"
     android:weightSum="5.5">
+
 
     <RelativeLayout
         android:id="@+id/editText_layout"
@@ -22,6 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_centerInParent="true"
+            android:background="@drawable/rounded_background"
             tools:ignore="UselessParent">
 
 
@@ -41,7 +44,7 @@
                 android:gravity="center_horizontal"
                 android:hint="Wpisz nazwe miasta"
                 android:imeOptions="actionGo"
-                android:inputType="textCapCharacters"
+                android:inputType="text"
                 android:maxLength="21"
                 android:textAllCaps="true"
                 android:textCursorDrawable="@null"
@@ -61,30 +64,30 @@
 
     <RelativeLayout
         android:id="@+id/place_time_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_width="177dp"
+        android:layout_height="6dp"
+        android:layout_weight="0.8">
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="114dp"
+            android:gravity="center_horizontal"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/id_city_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""
+                android:text="city"
                 android:textAllCaps="true"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textSize="32sp" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="-12dp"
-                android:gravity="center_horizontal"
+                android:layout_width="177dp"
+                android:layout_height="87dp"
+                android:layout_marginTop="-30dp"
+                android:gravity="center"
                 android:orientation="vertical">
 
                 <TextView
@@ -93,8 +96,15 @@
                     android:layout_height="wrap_content"
                     android:letterSpacing="0.1"
                     android:text="Ostatnia aktualizacja"
-                    android:textColor="@color/black"
-                    android:textSize="8sp" />
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+
+                <View
+                    android:id="@+id/separator_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="6dp"
+                    android:layout_below="@id/id_city_name"
+                    />
 
                 <TextView
                     android:id="@+id/updated_at_tv"
@@ -102,9 +112,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="-4dp"
                     android:letterSpacing="0.1"
-                    android:text=""
+                    android:text="updated at"
                     android:textAllCaps="true"
-                    android:textColor="@color/black"
+                    android:textColor="@color/white"
                     android:textSize="11sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -115,7 +125,8 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_weight="1.5"
+        android:layout_weight="1.0"
+        android:layout_marginTop="-50dp"
         android:gravity="center">
 
         <LinearLayout
@@ -137,8 +148,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="-8dp"
                 android:letterSpacing=".08"
-                android:text=""
-                android:textColor="@color/black"
+                android:text="Condition"
+                android:textColor="@color/white"
                 android:textSize="22sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -153,6 +164,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
+            android:background="@drawable/rounded_background"
             android:layout_height="90dp">
 
             <TextView
@@ -161,8 +173,8 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:textAllCaps="true"
-                android:text=""
-                android:textColor="@color/black"
+                android:text="99℃"
+                android:textColor="@color/white"
                 android:textSize="34sp" />
 
             <LinearLayout
@@ -191,8 +203,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
                         android:textAllCaps="true"
-                        android:text=""
-                        android:textColor="@color/black"
+                        android:text="69℃"
+                        android:textColor="@color/white"
                         android:textSize="16sp" />
                 </LinearLayout>
 
@@ -215,8 +227,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
                         android:textAllCaps="true"
-                        android:text=""
-                        android:textColor="@color/black"
+                        android:text="96℃"
+                        android:textColor="@color/white"
                         android:textSize="16sp" />
                 </LinearLayout>
             </LinearLayout>
@@ -225,9 +237,10 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="382dp"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:background="@drawable/rounded_background"
         android:gravity="center"
         android:orientation="horizontal"
         android:paddingHorizontal="6dp"
@@ -251,7 +264,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Ciśnienie"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textSize="14sp" />
 
             <TextView
@@ -259,8 +272,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="-6dp"
-                android:text=""
-                android:textColor="@color/black"
+                android:text="420hPa"
+                android:textColor="@color/white"
                 android:textSize="14sp" />
         </LinearLayout>
 
@@ -282,7 +295,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Wiatr"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textSize="14sp" />
 
             <TextView
@@ -290,8 +303,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="-6dp"
-                android:text=""
-                android:textColor="@color/black"
+                android:text="88mph"
+                android:textColor="@color/white"
                 android:textSize="14sp" />
         </LinearLayout>
 
@@ -313,7 +326,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Wilgotność"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textSize="14sp" />
 
             <TextView
@@ -321,8 +334,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="-6dp"
-                android:text=""
-                android:textColor="@color/black"
+                android:text="69%"
+                android:textColor="@color/white"
                 android:textSize="14sp" />
         </LinearLayout>
     </LinearLayout>
