@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -34,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        getCityLatLon();
+        getCityLatLon("Gliwice");
         EditText editText = findViewById(R.id.city_et);
 //
         editText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
@@ -73,18 +74,21 @@ public class MainActivity extends AppCompatActivity {
     {
         City.name = cityName;
         API_URL.setCity_link(cityName);
+        Toast.makeText(this, API_URL.getCity_link(), Toast.LENGTH_SHORT).show();
         RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, API_URL.getCity_link(), null, response -> {
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, API_URL.getCity_link().toString(), null, response -> {
             try {
                 City.lat = response.getJSONObject("coord").getString("lat");
                 City.lon = response.getJSONObject("coord").getString("lon");
-                getCurrentWeather(cityName);
+                Toast.makeText(this, "City: lat: "+City.lat+" lon: "+City.lon, Toast.LENGTH_SHORT).show();
+//                getCurrentWeather(cityName);
                 // After the successfully city search the cityEt(editText) is Empty.
                 //binding.layout.cityEt.setText("");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }, error -> Toast.makeText(this, "City not found!", Toast.LENGTH_SHORT).show());
+        }, error -> Toast.makeText(this, error.getMessage(), Toast.LENGTH_SHORT).show());
 
         requestQueue.add(jsonObjectRequest);
     }
