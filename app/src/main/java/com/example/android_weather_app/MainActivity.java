@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -48,9 +49,16 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Animation rotation = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate);
                 refresh.startAnimation(rotation);
-                searchCity(City.name);
-                refresh.clearAnimation();
-                Toast.makeText(getApplicationContext(), "Dane zaktualizowane o " + updated_at, Toast.LENGTH_SHORT).show();
+                if(searchCity(City.name))
+                    Toast.makeText(getApplicationContext(), "Dane zaktualizowane o " + updated_at, Toast.LENGTH_SHORT).show();
+
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        refresh.clearAnimation();
+                    }
+                }, 1000); //clear animation after a second
             }
         });
 
@@ -71,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void getCityLatLon(String cityName)
     {
-        City.name = cityName;
         OWM.setCity_link(cityName);
         RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
 //        Toast.makeText(this, "Getcitylatlon", Toast.LENGTH_SHORT).show();
@@ -88,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
-
+                City.name = cityName;
                 getCurrentWeather(City.name);
 
             } catch (JSONException e) {
@@ -99,11 +106,13 @@ public class MainActivity extends AppCompatActivity {
         requestQueue.add(jsonObjectRequest);
     }
 
-    private void searchCity(String cityName) {
+    private boolean searchCity(String cityName) {
         if (cityName == null || cityName.isEmpty()) {
             Toast.makeText(this, "Proszę wpisz miasto", Toast.LENGTH_SHORT).show();
+            return false;
         } else {
             getCityLatLon(cityName);
+            return true;
         }
     }
 
