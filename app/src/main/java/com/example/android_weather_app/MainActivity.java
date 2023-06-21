@@ -3,11 +3,14 @@ package com.example.android_weather_app;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,43 +33,23 @@ public class MainActivity extends AppCompatActivity {
     private int weather_id = 0;
     private String icon, updated_at, desc, temp, temp_min, temp_max, pressure, wind_speed, humidity = "";
 
-//    private EditText
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getCityLatLon("Zabrze");
         EditText editText = findViewById(R.id.id_searched_city);
-//
-        editText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
-                    // Wywołaj funkcję lub wykonaj akcję po naciśnięciu przycisku Enter
 
+        editText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                    // Process the city after clicking Enter
+                    String text = editText.getText().toString();
+                    getCityLatLon(text);
                     return true;
                 }
                 return false;
             }
-        });
-        editText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                String text = editText.getText().toString();
-                Toast.makeText(getApplicationContext(), "City: "+text, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-            // Implementacja interfejsu TextWatcher
         });
     }
 
@@ -75,28 +58,33 @@ public class MainActivity extends AppCompatActivity {
     {
         City.name = cityName;
         OWM.setCity_link(cityName);
-//        Toast.makeText(this, OWM.getCity_link(), Toast.LENGTH_SHORT).show();
         RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, OWM.getCity_link().toString(), null, response -> {
             try {
                 City.lat = response.getJSONObject("coord").getString("lat");
                 City.lon = response.getJSONObject("coord").getString("lon");
-//                Toast.makeText(this, "City: lat: "+City.lat+" lon: "+City.lon, Toast.LENGTH_SHORT).show();
-                getCurrentWeather(cityName);
-                // After the successfully city search the cityEt(editText) is Empty.
-                //binding.layout.cityEt.setText("");
+
+                //After a valid city has been passed, clear the search bar and hide the keyboard
+                EditText editText = findViewById(R.id.id_searched_city);
+                editText.setText("");
+
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+
+                getCurrentWeather(City.name);
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }, error -> Toast.makeText(this, "City not found!", Toast.LENGTH_SHORT).show());
+        }, error -> Toast.makeText(this, "Nie znaleziono takiego miasta!", Toast.LENGTH_SHORT).show());
 
         requestQueue.add(jsonObjectRequest);
     }
 
     private void searchCity(String cityName) {
         if (cityName == null || cityName.isEmpty()) {
-            Toast.makeText(this, "Please enter a city", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Proszę wpisz miasto", Toast.LENGTH_SHORT).show();
         } else {
             getCityLatLon(cityName);
         }
@@ -125,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                 wind_speed = response.getJSONArray("daily").getJSONObject(0).getString("wind_speed");
                 humidity = response.getJSONArray("daily").getJSONObject(0).getString("humidity");
                 UpdateInfo();
-                Toast.makeText(this, "Icon link: "+ url.getIcon_link(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, "Icon link: "+ url.getIcon_link(), Toast.LENGTH_SHORT).show();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -155,7 +143,6 @@ public class MainActivity extends AppCompatActivity {
         condition_txt.setText(desc.substring(0,1).toUpperCase()+ desc.substring(1));
         updated_at_txt.setText(updated_at);
         Picasso.with(this).load(OWM.getIcon_link()).into(condition_img);
-//        id_wind
-//        updated_at_tv
+
     }
 }
