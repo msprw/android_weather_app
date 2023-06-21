@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getCityLatLon("Gliwice");
-        EditText editText = findViewById(R.id.city_et);
+        EditText editText = findViewById(R.id.id_searched_city);
 //
         editText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
