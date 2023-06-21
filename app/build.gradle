@@ -7,7 +7,7 @@ android {
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.android_weather_app"
+        applicationId "com.msprw.android_weather_app"
         minSdk 29
         targetSdk 33
         versionCode 1

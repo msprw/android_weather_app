@@ -17,6 +17,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
     private ImageView humidity_img;
     private ImageView temp_min_img;
     private ImageView temp_max_img;
+    private RelativeLayout temp_layout;
+    private LinearLayout air_layout;
 
     private EditText editText;
     private ImageView refresh;
@@ -159,7 +163,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void InitializeUI(){
-
+        temp_layout = findViewById(R.id.temp_layout);
+        air_layout = findViewById(R.id.air_layout);
         editText = findViewById(R.id.id_searched_city);
         refresh = findViewById(R.id.id_refresh);
         city_txt = findViewById(R.id.id_city_name);
@@ -184,6 +189,8 @@ public class MainActivity extends AppCompatActivity {
     }
     private void SwitchUIVisibility(boolean state){
         if(!state) {
+            temp_layout.setVisibility(View.INVISIBLE);
+            air_layout.setVisibility(View.INVISIBLE);
             city_txt.setVisibility(View.INVISIBLE);
             wind_txt.setVisibility(View.INVISIBLE);
             temp_txt.setVisibility(View.INVISIBLE);
@@ -204,6 +211,8 @@ public class MainActivity extends AppCompatActivity {
             humidity_static.setVisibility(View.INVISIBLE);
             updated_at_static.setVisibility(View.INVISIBLE);
         } else {
+            temp_layout.setVisibility(View.VISIBLE);
+            air_layout.setVisibility(View.VISIBLE);
             city_txt.setVisibility(View.VISIBLE);
             wind_txt.setVisibility(View.VISIBLE);
             temp_txt.setVisibility(View.VISIBLE);

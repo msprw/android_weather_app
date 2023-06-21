@@ -25,12 +25,13 @@
             android:layout_height="60dp"
             android:layout_centerInParent="true"
             android:background="@drawable/rounded_background"
+            android:gravity="center"
             tools:ignore="UselessParent">
 
 
             <EditText
                 android:id="@+id/id_searched_city"
-                android:layout_width="314dp"
+                android:layout_width="333dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
                 android:layout_marginLeft="12dp"
@@ -155,6 +156,16 @@
         </LinearLayout>
     </RelativeLayout>
 
+    <TextView
+        android:id="@+id/id_temp"
+        android:layout_width="186dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="99℃"
+        android:textAllCaps="true"
+        android:textColor="@color/white"
+        android:textSize="34sp" />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -163,25 +174,18 @@
         android:gravity="center">
 
         <RelativeLayout
+            android:id="@+id/temp_layout"
             android:layout_width="match_parent"
             android:background="@drawable/rounded_background"
+            android:gravity="center"
             android:layout_height="90dp">
 
-            <TextView
-                android:id="@+id/id_temp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:textAllCaps="true"
-                android:text="99℃"
-                android:textColor="@color/white"
-                android:textSize="34sp" />
-
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/id_temp"
+                android:layout_width="232dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="0dp"
                 android:alpha=".85"
+                android:gravity="center"
                 android:paddingHorizontal="16dp"
                 android:weightSum="2">
 
@@ -202,8 +206,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
-                        android:textAllCaps="true"
                         android:text="69℃"
+                        android:textAllCaps="true"
                         android:textColor="@color/white"
                         android:textSize="16sp" />
                 </LinearLayout>
@@ -226,17 +230,19 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
-                        android:textAllCaps="true"
                         android:text="96℃"
+                        android:textAllCaps="true"
                         android:textColor="@color/white"
                         android:textSize="16sp" />
                 </LinearLayout>
             </LinearLayout>
+
         </RelativeLayout>
 
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/air_layout"
         android:layout_width="382dp"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -288,7 +294,7 @@
                 android:id="@+id/ic_wind"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:src="@drawable/wind" />
+                android:src="@drawable/direction_icon" />
 
             <TextView
                 android:id="@+id/id_wind_static"
