@@ -9,6 +9,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -44,7 +46,11 @@ public class MainActivity extends AppCompatActivity {
         refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Animation rotation = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate);
+                refresh.startAnimation(rotation);
                 searchCity(City.name);
+                refresh.clearAnimation();
+                Toast.makeText(getApplicationContext(), "Dane zaktualizowane o " + updated_at, Toast.LENGTH_SHORT).show();
             }
         });
 
