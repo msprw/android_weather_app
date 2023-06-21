@@ -9,6 +9,7 @@ import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +17,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 
@@ -26,7 +28,7 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
     private long update_time, sunrise, sunset = 0;
     private int weather_id = 0;
-    private String updated_at, desc, temp, temp_min, temp_max, pressure, wind_speed, humidity = "";
+    private String icon, updated_at, desc, temp, temp_min, temp_max, pressure, wind_speed, humidity = "";
 
 //    private EditText
 
@@ -73,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     {
         City.name = cityName;
         OWM.setCity_link(cityName);
-        Toast.makeText(this, OWM.getCity_link(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, OWM.getCity_link(), Toast.LENGTH_SHORT).show();
         RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, OWM.getCity_link().toString(), null, response -> {
@@ -113,6 +115,8 @@ public class MainActivity extends AppCompatActivity {
                 sunrise = response.getJSONArray("daily").getJSONObject(0).getLong("sunrise");
                 sunset = response.getJSONArray("daily").getJSONObject(0).getLong("sunset");
                 desc = response.getJSONObject("current").getJSONArray("weather").getJSONObject(0).getString("description");
+                icon = response.getJSONObject("current").getJSONArray("weather").getJSONObject(0).getString("icon");
+                OWM.setIcon_link(icon);
 
                 temp = String.format("%.1f", response.getJSONObject("current").getDouble("temp"));
                 temp_min = String.format("%.1f", response.getJSONArray("daily").getJSONObject(0).getJSONObject("temp").getDouble("min"));
@@ -121,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
                 wind_speed = response.getJSONArray("daily").getJSONObject(0).getString("wind_speed");
                 humidity = response.getJSONArray("daily").getJSONObject(0).getString("humidity");
                 UpdateInfo();
-//                Toast.makeText(this, "Temp: "+temp+" desc: "+desc, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Icon link: "+ url.getIcon_link(), Toast.LENGTH_SHORT).show();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -139,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
         TextView humid_txt = findViewById(R.id.id_humidity);
         TextView condition_txt = findViewById(R.id.id_condition);
         TextView updated_at_txt = findViewById(R.id.updated_at_tv);
+        ImageView condition_img = findViewById(R.id.id_condition_img);
 
         city_txt.setText(City.name);
         wind_txt.setText(wind_speed+"m/s");
@@ -149,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
         humid_txt.setText(humidity + "%");
         condition_txt.setText(desc.substring(0,1).toUpperCase()+ desc.substring(1));
         updated_at_txt.setText(updated_at);
+        Picasso.with(this).load(OWM.getIcon_link()).into(condition_img);
 //        id_wind
 //        updated_at_tv
     }
