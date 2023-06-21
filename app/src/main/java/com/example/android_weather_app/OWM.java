@@ -1,12 +1,12 @@
 package com.example.android_weather_app;
 
-public class API_URL {
+public class OWM {
     private static String city_link;
     private String weather_link;
 
-    public API_URL() {
+    public OWM() {
         this.city_link = "";
-        this.weather_link = "https://api.openweathermap.org/data/2.5/onecall?exclude=minutely&units=metric&lat="
+        this.weather_link = "https://api.openweathermap.org/data/2.5/onecall?exclude=minutely&lang=pl&units=metric&lat="
                 + City.lat + "&lon=" + City.lon + "&appid=eeb8b40367eee691683e5a079e2fa695";
     }
 
@@ -19,7 +19,7 @@ public class API_URL {
     }
 
     public static void setCity_link(String cityName) {
-        city_link = "https://api.openweathermap.org/data/2.5/weather?&q=" + cityName + "&appid=eeb8b40367eee691683e5a079e2fa695";
+        city_link = "https://api.openweathermap.org/data/2.5/weather?&lang=pl&q=" + cityName + "&appid=eeb8b40367eee691683e5a079e2fa695";
 
     }
 

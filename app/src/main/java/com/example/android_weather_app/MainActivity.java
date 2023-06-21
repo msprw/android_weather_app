@@ -6,7 +6,6 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -73,15 +72,15 @@ public class MainActivity extends AppCompatActivity {
     private void getCityLatLon(String cityName)
     {
         City.name = cityName;
-        API_URL.setCity_link(cityName);
-        Toast.makeText(this, API_URL.getCity_link(), Toast.LENGTH_SHORT).show();
+        OWM.setCity_link(cityName);
+        Toast.makeText(this, OWM.getCity_link(), Toast.LENGTH_SHORT).show();
         RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, API_URL.getCity_link().toString(), null, response -> {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, OWM.getCity_link().toString(), null, response -> {
             try {
                 City.lat = response.getJSONObject("coord").getString("lat");
                 City.lon = response.getJSONObject("coord").getString("lon");
-                Toast.makeText(this, "City: lat: "+City.lat+" lon: "+City.lon, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, "City: lat: "+City.lat+" lon: "+City.lon, Toast.LENGTH_SHORT).show();
                 getCurrentWeather(cityName);
                 // After the successfully city search the cityEt(editText) is Empty.
                 //binding.layout.cityEt.setText("");
@@ -104,25 +103,25 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("DefaultLocale")
     private void getCurrentWeather(String cityName)
     {
-        API_URL url = new API_URL();
+        OWM url = new OWM();
         RequestQueue requestQueue = Volley.newRequestQueue(this);
          JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url.getWeather_link(), null, response -> {
             try{
                 City.name = cityName;
                 update_time = response.getJSONObject("current").getLong("dt");
-                updated_at = new SimpleDateFormat("EEEE hh:mm a", Locale.ENGLISH).format(new Date(update_time * 1000));
+                updated_at = new SimpleDateFormat("EEEE hh:mm a", Locale.getDefault()).format(new Date(update_time * 1000));
                 sunrise = response.getJSONArray("daily").getJSONObject(0).getLong("sunrise");
                 sunset = response.getJSONArray("daily").getJSONObject(0).getLong("sunset");
-                desc = response.getJSONObject("current").getJSONArray("weather").getJSONObject(0).getString("main");
+                desc = response.getJSONObject("current").getJSONArray("weather").getJSONObject(0).getString("description");
 
-                temp = String.valueOf(Math.round(response.getJSONObject("current").getDouble("temp")));
-                temp_min = String.format("%.0f", response.getJSONArray("daily").getJSONObject(0).getJSONObject("temp").getDouble("min"));
-                temp_max = String.format("%.0f", response.getJSONArray("daily").getJSONObject(0).getJSONObject("temp").getDouble("max"));
+                temp = String.format("%.1f", response.getJSONObject("current").getDouble("temp"));
+                temp_min = String.format("%.1f", response.getJSONArray("daily").getJSONObject(0).getJSONObject("temp").getDouble("min"));
+                temp_max = String.format("%.1f", response.getJSONArray("daily").getJSONObject(0).getJSONObject("temp").getDouble("max"));
                 pressure = response.getJSONArray("daily").getJSONObject(0).getString("pressure");
                 wind_speed = response.getJSONArray("daily").getJSONObject(0).getString("wind_speed");
                 humidity = response.getJSONArray("daily").getJSONObject(0).getString("humidity");
                 UpdateInfo();
-                Toast.makeText(this, "Temp: "+temp+" desc: "+desc, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, "Temp: "+temp+" desc: "+desc, Toast.LENGTH_SHORT).show();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -148,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
         temp_max_txt.setText(temp_max +"\u2103");
         pressure_txt.setText(pressure + "hPa");
         humid_txt.setText(humidity + "%");
-        condition_txt.setText(desc);
+        condition_txt.setText(desc.substring(0,1).toUpperCase()+ desc.substring(1));
         updated_at_txt.setText(updated_at);
 //        id_wind
 //        updated_at_tv
