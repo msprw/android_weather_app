@@ -11,6 +11,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -38,6 +39,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         EditText editText = findViewById(R.id.id_searched_city);
+        ImageView refresh = findViewById(R.id.id_refresh);
+
+        refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                searchCity(City.name);
+            }
+        });
 
         editText.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -59,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
         City.name = cityName;
         OWM.setCity_link(cityName);
         RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
+//        Toast.makeText(this, "Getcitylatlon", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "city: "+City.name, Toast.LENGTH_SHORT).show();
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, OWM.getCity_link().toString(), null, response -> {
             try {
@@ -113,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                 wind_speed = response.getJSONArray("daily").getJSONObject(0).getString("wind_speed");
                 humidity = response.getJSONArray("daily").getJSONObject(0).getString("humidity");
                 UpdateInfo();
-//                Toast.makeText(this, "Icon link: "+ url.getIcon_link(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, "Updated at: "+ updated_at, Toast.LENGTH_SHORT).show();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
