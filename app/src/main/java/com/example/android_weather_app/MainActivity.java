@@ -25,9 +25,9 @@ import java.util.Date;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-    private long update_time, sunrise, sunset;
-    private int weather_id;
-    private String updated_at, desc, temp, temp_min, temp_max, pressure, wind_speed, humidity;
+    private long update_time, sunrise, sunset = 0;
+    private int weather_id = 0;
+    private String updated_at, desc, temp, temp_min, temp_max, pressure, wind_speed, humidity = "";
 
 //    private EditText
 
@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getCityLatLon("Gliwice");
+        getCityLatLon("Zabrze");
         EditText editText = findViewById(R.id.id_searched_city);
 //
         editText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
@@ -82,13 +82,13 @@ public class MainActivity extends AppCompatActivity {
                 City.lat = response.getJSONObject("coord").getString("lat");
                 City.lon = response.getJSONObject("coord").getString("lon");
                 Toast.makeText(this, "City: lat: "+City.lat+" lon: "+City.lon, Toast.LENGTH_SHORT).show();
-//                getCurrentWeather(cityName);
+                getCurrentWeather(cityName);
                 // After the successfully city search the cityEt(editText) is Empty.
                 //binding.layout.cityEt.setText("");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }, error -> Toast.makeText(this, error.getMessage(), Toast.LENGTH_SHORT).show());
+        }, error -> Toast.makeText(this, "City not found!", Toast.LENGTH_SHORT).show());
 
         requestQueue.add(jsonObjectRequest);
     }
@@ -121,10 +121,36 @@ public class MainActivity extends AppCompatActivity {
                 pressure = response.getJSONArray("daily").getJSONObject(0).getString("pressure");
                 wind_speed = response.getJSONArray("daily").getJSONObject(0).getString("wind_speed");
                 humidity = response.getJSONArray("daily").getJSONObject(0).getString("humidity");
+                UpdateInfo();
+                Toast.makeText(this, "Temp: "+temp+" desc: "+desc, Toast.LENGTH_SHORT).show();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }, null);
         requestQueue.add(jsonObjectRequest);
+    }
+    private void UpdateInfo()
+    {
+        TextView city_txt = findViewById(R.id.id_city_name);
+        TextView wind_txt = findViewById(R.id.id_wind);
+        TextView temp_txt = findViewById(R.id.id_temp);
+        TextView temp_min_txt = findViewById(R.id.id_min_temp);
+        TextView temp_max_txt = findViewById(R.id.id_max_temp);
+        TextView pressure_txt = findViewById(R.id.id_pressure);
+        TextView humid_txt = findViewById(R.id.id_humidity);
+        TextView condition_txt = findViewById(R.id.id_condition);
+        TextView updated_at_txt = findViewById(R.id.updated_at_tv);
+
+        city_txt.setText(City.name);
+        wind_txt.setText(wind_speed+"m/s");
+        temp_txt.setText(temp + "\u2103");
+        temp_min_txt.setText(temp_min +"\u2103");
+        temp_max_txt.setText(temp_max +"\u2103");
+        pressure_txt.setText(pressure + "hPa");
+        humid_txt.setText(humidity + "%");
+        condition_txt.setText(desc);
+        updated_at_txt.setText(updated_at);
+//        id_wind
+//        updated_at_tv
     }
 }

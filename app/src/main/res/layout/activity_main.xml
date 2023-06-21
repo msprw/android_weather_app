@@ -184,7 +184,7 @@
                         android:src="@drawable/min_temperature" />
 
                     <TextView
-                        android:id="@+id/idmin_temp"
+                        android:id="@+id/id_min_temp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
