@@ -75,7 +75,7 @@
                 android:id="@+id/id_city_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="GLIWICE"
+                android:text=""
                 android:textAllCaps="true"
                 android:textColor="@color/black"
                 android:textSize="32sp" />
@@ -88,6 +88,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/id_updated_at_static"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:letterSpacing="0.1"
@@ -101,7 +102,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="-4dp"
                     android:letterSpacing="0.1"
-                    android:text="Poniedziałek, 19:00"
+                    android:text=""
                     android:textAllCaps="true"
                     android:textColor="@color/black"
                     android:textSize="11sp"
@@ -136,7 +137,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="-8dp"
                 android:letterSpacing=".08"
-                android:text="Cloud"
+                android:text=""
                 android:textColor="@color/black"
                 android:textSize="22sp"
                 android:textStyle="bold" />
@@ -160,7 +161,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:textAllCaps="true"
-                android:text="20C"
+                android:text=""
                 android:textColor="@color/black"
                 android:textSize="34sp" />
 
@@ -179,6 +180,7 @@
                     android:orientation="horizontal">
 
                     <ImageView
+                        android:id="@+id/ic_min_temp"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:src="@drawable/min_temperature" />
@@ -189,7 +191,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
                         android:textAllCaps="true"
-                        android:text="20C"
+                        android:text=""
                         android:textColor="@color/black"
                         android:textSize="16sp" />
                 </LinearLayout>
@@ -202,6 +204,7 @@
                     android:orientation="horizontal">
 
                     <ImageView
+                        android:id="@+id/ic_max_temp"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:src="@drawable/max_temperature" />
@@ -212,7 +215,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
                         android:textAllCaps="true"
-                        android:text="40C"
+                        android:text=""
                         android:textColor="@color/black"
                         android:textSize="16sp" />
                 </LinearLayout>
@@ -238,11 +241,13 @@
             android:orientation="vertical">
 
             <ImageView
+                android:id="@+id/ic_pressure"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
                 android:src="@drawable/pressure" />
 
             <TextView
+                android:id="@+id/id_pressure_static"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Ciśnienie"
@@ -254,7 +259,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="-6dp"
-                android:text="1440"
+                android:text=""
                 android:textColor="@color/black"
                 android:textSize="14sp" />
         </LinearLayout>
@@ -267,11 +272,13 @@
             android:orientation="vertical">
 
             <ImageView
+                android:id="@+id/ic_wind"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
                 android:src="@drawable/wind" />
 
             <TextView
+                android:id="@+id/id_wind_static"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Wiatr"
@@ -283,7 +290,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="-6dp"
-                android:text="12"
+                android:text=""
                 android:textColor="@color/black"
                 android:textSize="14sp" />
         </LinearLayout>
@@ -296,11 +303,13 @@
             android:orientation="vertical">
 
             <ImageView
+                android:id="@+id/ic_humidity"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
                 android:src="@drawable/humidity" />
 
             <TextView
+                android:id="@+id/id_humidity_static"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Wilgotność"
@@ -312,7 +321,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="-6dp"
-                android:text="12"
+                android:text=""
                 android:textColor="@color/black"
                 android:textSize="14sp" />
         </LinearLayout>

@@ -37,43 +37,40 @@ public class MainActivity extends AppCompatActivity {
     private int weather_id = 0;
     private String icon, updated_at, desc, temp, temp_min, temp_max, pressure, wind_speed, humidity = "";
 
+    private TextView city_txt;
+    private TextView wind_txt;
+    private TextView temp_txt;
+    private TextView temp_min_txt;
+    private TextView temp_max_txt;
+    private TextView pressure_txt;
+    private TextView humid_txt;
+    private TextView condition_txt;
+    private TextView updated_at_txt;
+    private TextView pressure_static;
+    private TextView wind_static;
+    private TextView humidity_static;
+    private TextView updated_at_static;
+    private ImageView condition_img;
+    private ImageView pressure_img;
+    private ImageView wind_img;
+    private ImageView humidity_img;
+    private ImageView temp_min_img;
+    private ImageView temp_max_img;
+
+    private EditText editText;
+    private ImageView refresh;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        EditText editText = findViewById(R.id.id_searched_city);
-        ImageView refresh = findViewById(R.id.id_refresh);
 
-        refresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Animation rotation = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate);
-                refresh.startAnimation(rotation);
-                if(searchCity(City.name))
-                    Toast.makeText(getApplicationContext(), "Dane zaktualizowane o " + updated_at, Toast.LENGTH_SHORT).show();
+        InitializeUI();
 
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        refresh.clearAnimation();
-                    }
-                }, 1000); //clear animation after a second
-            }
-        });
+        SwitchUIVisibility(false);
 
-        editText.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                    // Process the city after clicking Enter
-                    String text = editText.getText().toString();
-                    getCityLatLon(text);
-                    return true;
-                }
-                return false;
-            }
-        });
+        SetupListeners();
+
     }
 
 
@@ -97,7 +94,6 @@ public class MainActivity extends AppCompatActivity {
                 imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
                 City.name = cityName;
                 getCurrentWeather(City.name);
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -139,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
                 wind_speed = response.getJSONArray("daily").getJSONObject(0).getString("wind_speed");
                 humidity = response.getJSONArray("daily").getJSONObject(0).getString("humidity");
                 UpdateInfo();
+                SwitchUIVisibility(true);
 //                Toast.makeText(this, "Updated at: "+ updated_at, Toast.LENGTH_SHORT).show();
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -148,17 +145,6 @@ public class MainActivity extends AppCompatActivity {
     }
     private void UpdateInfo()
     {
-        TextView city_txt = findViewById(R.id.id_city_name);
-        TextView wind_txt = findViewById(R.id.id_wind);
-        TextView temp_txt = findViewById(R.id.id_temp);
-        TextView temp_min_txt = findViewById(R.id.id_min_temp);
-        TextView temp_max_txt = findViewById(R.id.id_max_temp);
-        TextView pressure_txt = findViewById(R.id.id_pressure);
-        TextView humid_txt = findViewById(R.id.id_humidity);
-        TextView condition_txt = findViewById(R.id.id_condition);
-        TextView updated_at_txt = findViewById(R.id.updated_at_tv);
-        ImageView condition_img = findViewById(R.id.id_condition_img);
-
         city_txt.setText(City.name);
         wind_txt.setText(wind_speed+"m/s");
         temp_txt.setText(temp + "\u2103");
@@ -170,5 +156,107 @@ public class MainActivity extends AppCompatActivity {
         updated_at_txt.setText(updated_at);
         Picasso.with(this).load(OWM.getIcon_link()).into(condition_img);
 
+    }
+
+    private void InitializeUI(){
+
+        editText = findViewById(R.id.id_searched_city);
+        refresh = findViewById(R.id.id_refresh);
+        city_txt = findViewById(R.id.id_city_name);
+        wind_txt = findViewById(R.id.id_wind);
+        temp_txt = findViewById(R.id.id_temp);
+        temp_min_txt = findViewById(R.id.id_min_temp);
+        temp_max_txt = findViewById(R.id.id_max_temp);
+        pressure_txt = findViewById(R.id.id_pressure);
+        humid_txt = findViewById(R.id.id_humidity);
+        condition_txt = findViewById(R.id.id_condition);
+        updated_at_txt = findViewById(R.id.updated_at_tv);
+        condition_img = findViewById(R.id.id_condition_img);
+        pressure_img = findViewById(R.id.ic_pressure);
+        wind_img = findViewById(R.id.ic_wind);
+        humidity_img = findViewById(R.id.ic_humidity);
+        temp_min_img = findViewById(R.id.ic_min_temp);
+        temp_max_img = findViewById(R.id.ic_max_temp);
+        pressure_static = findViewById(R.id.id_pressure_static);
+        wind_static = findViewById(R.id.id_wind_static);
+        humidity_static = findViewById(R.id.id_humidity_static);
+        updated_at_static = findViewById(R.id.id_updated_at_static);
+    }
+    private void SwitchUIVisibility(boolean state){
+        if(!state) {
+            city_txt.setVisibility(View.INVISIBLE);
+            wind_txt.setVisibility(View.INVISIBLE);
+            temp_txt.setVisibility(View.INVISIBLE);
+            temp_min_txt.setVisibility(View.INVISIBLE);
+            temp_max_txt.setVisibility(View.INVISIBLE);
+            pressure_txt.setVisibility(View.INVISIBLE);
+            humid_txt.setVisibility(View.INVISIBLE);
+            condition_txt.setVisibility(View.INVISIBLE);
+            updated_at_txt.setVisibility(View.INVISIBLE);
+            condition_img.setVisibility(View.INVISIBLE);
+            pressure_img.setVisibility(View.INVISIBLE);
+            wind_img.setVisibility(View.INVISIBLE);
+            humidity_img.setVisibility(View.INVISIBLE);
+            temp_min_img.setVisibility(View.INVISIBLE);
+            temp_max_img.setVisibility(View.INVISIBLE);
+            pressure_static.setVisibility(View.INVISIBLE);
+            wind_static.setVisibility(View.INVISIBLE);
+            humidity_static.setVisibility(View.INVISIBLE);
+            updated_at_static.setVisibility(View.INVISIBLE);
+        } else {
+            city_txt.setVisibility(View.VISIBLE);
+            wind_txt.setVisibility(View.VISIBLE);
+            temp_txt.setVisibility(View.VISIBLE);
+            temp_min_txt.setVisibility(View.VISIBLE);
+            temp_max_txt.setVisibility(View.VISIBLE);
+            pressure_txt.setVisibility(View.VISIBLE);
+            humid_txt.setVisibility(View.VISIBLE);
+            condition_txt.setVisibility(View.VISIBLE);
+            updated_at_txt.setVisibility(View.VISIBLE);
+            condition_img.setVisibility(View.VISIBLE);
+            pressure_img.setVisibility(View.VISIBLE);
+            wind_img.setVisibility(View.VISIBLE);
+            humidity_img.setVisibility(View.VISIBLE);
+            temp_min_img.setVisibility(View.VISIBLE);
+            temp_max_img.setVisibility(View.VISIBLE);
+            pressure_static.setVisibility(View.VISIBLE);
+            wind_static.setVisibility(View.VISIBLE);
+            humidity_static.setVisibility(View.VISIBLE);
+            updated_at_static.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void SetupListeners(){
+        refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Animation rotation = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate);
+                refresh.startAnimation(rotation);
+                if(searchCity(City.name))
+                    Toast.makeText(getApplicationContext(), "Dane zaktualizowane o " + updated_at, Toast.LENGTH_SHORT).show();
+
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        refresh.clearAnimation();
+                    }
+                }, 1000); //clear animation after a second
+            }
+        });
+
+        editText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                    // Process the city after clicking Enter
+                    String text = editText.getText().toString();
+                    getCityLatLon(text);
+//                    SwitchUIVisibility(true);
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 }
