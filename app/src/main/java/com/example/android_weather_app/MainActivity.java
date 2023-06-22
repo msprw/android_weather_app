@@ -32,6 +32,7 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
     private long update_time, sunrise, sunset = 0;
     private int weather_id = 0;
+    private double wind_direction;
     private String icon, updated_at, desc, temp, temp_min, temp_max, pressure, wind_speed, humidity = "";
 
     private TextView city_txt;
@@ -87,13 +88,17 @@ public class MainActivity extends AppCompatActivity {
                 sunset = response.getJSONObject("sys").getLong("sunset");
 
                 wind_speed = response.getJSONObject("wind").getString("speed");
+                wind_direction = response.getJSONObject("wind").getDouble("deg");
+
                 pressure = response.getJSONObject("main").getString("pressure");
                 humidity = response.getJSONObject("main").getString("humidity");
                 temp = String.format("%.1f", response.getJSONObject("main").getDouble("temp"));
                 temp_min = String.format("%.1f", response.getJSONObject("main").getDouble("temp_min"));
                 temp_max = String.format("%.1f", response.getJSONObject("main").getDouble("temp_max"));
+
                 desc = response.getJSONArray("weather").getJSONObject(0).getString("description");
                 icon = response.getJSONArray("weather").getJSONObject(0).getString("icon");
+
                 //fetch an icon from OWM
                 OWM.setIcon_link(icon);
 
@@ -172,8 +177,8 @@ public class MainActivity extends AppCompatActivity {
         humid_txt.setText(humidity + "%");
         condition_txt.setText(desc.substring(0,1).toUpperCase()+ desc.substring(1));
         updated_at_txt.setText(updated_at);
+        wind_img.setRotation(Math.round(wind_direction));
         Picasso.with(this).load(OWM.getIcon_link()).into(condition_img);
-
     }
 
     private void InitializeUI(){
@@ -256,7 +261,6 @@ public class MainActivity extends AppCompatActivity {
                 Animation rotation = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate);
                 refresh.startAnimation(rotation);
                 if(searchCity(City.name)){
-//                    UpdateInfo();
                     Toast.makeText(getApplicationContext(), "Dane zostały zaktualizowane!", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getApplicationContext(), "Nie udało się zaktualizować danych", Toast.LENGTH_SHORT).show();
@@ -279,7 +283,6 @@ public class MainActivity extends AppCompatActivity {
                     // Process the city after clicking Enter
                     String text = editText.getText().toString();
                     getCurrentWeather(text);
-//                    SwitchUIVisibility(true);
                     return true;
                 }
                 return false;
