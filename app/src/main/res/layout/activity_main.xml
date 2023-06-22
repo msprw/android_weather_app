@@ -294,7 +294,7 @@
                 android:id="@+id/ic_wind"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:src="@drawable/direction_icon" />
+                android:src="@drawable/compass_icon" />
 
             <TextView
                 android:id="@+id/id_wind_static"

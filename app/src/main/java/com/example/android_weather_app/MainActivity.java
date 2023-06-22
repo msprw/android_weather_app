@@ -2,19 +2,14 @@ package com.example.android_weather_app;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -78,17 +73,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void getCityLatLon(String cityName)
+    private void getCurrentWeather(String cityName)
     {
         OWM.setCity_link(cityName);
         RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
-//        Toast.makeText(this, "Getcitylatlon", Toast.LENGTH_SHORT).show();
-//        Toast.makeText(this, "city: "+City.name, Toast.LENGTH_SHORT).show();
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, OWM.getCity_link().toString(), null, response -> {
             try {
                 City.lat = response.getJSONObject("coord").getString("lat");
                 City.lon = response.getJSONObject("coord").getString("lon");
+
+                sunrise = response.getJSONObject("sys").getLong("sunrise");
+                sunset = response.getJSONObject("sys").getLong("sunset");
+
+                wind_speed = response.getJSONObject("wind").getString("speed");
+                pressure = response.getJSONObject("main").getString("pressure");
+                humidity = response.getJSONObject("main").getString("humidity");
+                temp = String.format("%.1f", response.getJSONObject("main").getDouble("temp"));
+                temp_min = String.format("%.1f", response.getJSONObject("main").getDouble("temp_min"));
+                temp_max = String.format("%.1f", response.getJSONObject("main").getDouble("temp_max"));
+                desc = response.getJSONArray("weather").getJSONObject(0).getString("description");
+                icon = response.getJSONArray("weather").getJSONObject(0).getString("icon");
+                //fetch an icon from OWM
+                OWM.setIcon_link(icon);
+
+                update_time = (System.currentTimeMillis());
+                updated_at = new SimpleDateFormat("EEEE hh:mm a", Locale.getDefault()).format(new Date(update_time));
 
                 //After a valid city has been passed, clear the search bar and hide the keyboard
                 EditText editText = findViewById(R.id.id_searched_city);
@@ -96,8 +106,12 @@ public class MainActivity extends AppCompatActivity {
 
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+
                 City.name = cityName;
-                getCurrentWeather(City.name);
+                UpdateInfo();
+                SwitchUIVisibility(true);
+
+//                getCurrentWeather(City.name);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -108,45 +122,45 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean searchCity(String cityName) {
         if (cityName == null || cityName.isEmpty()) {
-            Toast.makeText(this, "Proszę wpisz miasto", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Proszę podaj miasto", Toast.LENGTH_SHORT).show();
             return false;
         } else {
-            getCityLatLon(cityName);
+            getCurrentWeather(cityName);
             return true;
         }
     }
 
-    @SuppressLint("DefaultLocale")
-    private void getCurrentWeather(String cityName)
-    {
-        OWM url = new OWM();
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url.getWeather_link(), null, response -> {
-            try{
-                City.name = cityName;
-                update_time = response.getJSONObject("current").getLong("dt");
-                updated_at = new SimpleDateFormat("EEEE hh:mm a", Locale.getDefault()).format(new Date(update_time * 1000));
-                sunrise = response.getJSONArray("daily").getJSONObject(0).getLong("sunrise");
-                sunset = response.getJSONArray("daily").getJSONObject(0).getLong("sunset");
-                desc = response.getJSONObject("current").getJSONArray("weather").getJSONObject(0).getString("description");
-                icon = response.getJSONObject("current").getJSONArray("weather").getJSONObject(0).getString("icon");
-                OWM.setIcon_link(icon);
-
-                temp = String.format("%.1f", response.getJSONObject("current").getDouble("temp"));
-                temp_min = String.format("%.1f", response.getJSONArray("daily").getJSONObject(0).getJSONObject("temp").getDouble("min"));
-                temp_max = String.format("%.1f", response.getJSONArray("daily").getJSONObject(0).getJSONObject("temp").getDouble("max"));
-                pressure = response.getJSONArray("daily").getJSONObject(0).getString("pressure");
-                wind_speed = response.getJSONArray("daily").getJSONObject(0).getString("wind_speed");
-                humidity = response.getJSONArray("daily").getJSONObject(0).getString("humidity");
-                UpdateInfo();
-                SwitchUIVisibility(true);
-//                Toast.makeText(this, "Updated at: "+ updated_at, Toast.LENGTH_SHORT).show();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }, null);
-        requestQueue.add(jsonObjectRequest);
-    }
+//    @SuppressLint("DefaultLocale")
+//    private void getCurrentWeather(String cityName)
+//    {
+//        OWM url = new OWM();
+//        RequestQueue requestQueue = Volley.newRequestQueue(this);
+//         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url.getWeather_link(), null, response -> {
+//            try{
+//                update_time = (System.currentTimeMillis() / 1000);
+//                updated_at = new SimpleDateFormat("EEEE hh:mm a", Locale.getDefault()).format(new Date(update_time * 1000));
+//                sunrise = response.getJSONArray("daily").getJSONObject(0).getLong("sunrise");
+//                sunset = response.getJSONArray("daily").getJSONObject(0).getLong("sunset");
+//                desc = response.getJSONObject("current").getJSONArray("weather").getJSONObject(0).getString("description");
+//                icon = response.getJSONObject("current").getJSONArray("weather").getJSONObject(0).getString("icon");
+//                OWM.setIcon_link(icon);
+//
+//                temp = String.format("%.1f", response.getJSONObject("current").getDouble("temp"));
+//                temp_min = String.format("%.1f", response.getJSONArray("daily").getJSONObject(0).getJSONObject("temp").getDouble("min"));
+//                temp_max = String.format("%.1f", response.getJSONArray("daily").getJSONObject(0).getJSONObject("temp").getDouble("max"));
+//                pressure = response.getJSONArray("daily").getJSONObject(0).getString("pressure");
+//                wind_speed = response.getJSONArray("daily").getJSONObject(0).getString("wind_speed");
+//                humidity = response.getJSONArray("daily").getJSONObject(0).getString("humidity");
+//                City.name = cityName;
+//                UpdateInfo();
+//                SwitchUIVisibility(true);
+////                Toast.makeText(this, "Updated at: "+ updated_at, Toast.LENGTH_SHORT).show();
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//        }, error -> Toast.makeText(this, "Wystąpił błąd przy pobieraniu danych pogodowych!", Toast.LENGTH_SHORT).show());
+//        requestQueue.add(jsonObjectRequest);
+//    }
     private void UpdateInfo()
     {
         city_txt.setText(City.name);
@@ -241,8 +255,12 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Animation rotation = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate);
                 refresh.startAnimation(rotation);
-                if(searchCity(City.name))
-                    Toast.makeText(getApplicationContext(), "Dane zaktualizowane o " + updated_at, Toast.LENGTH_SHORT).show();
+                if(searchCity(City.name)){
+//                    UpdateInfo();
+                    Toast.makeText(getApplicationContext(), "Dane zostały zaktualizowane!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Nie udało się zaktualizować danych", Toast.LENGTH_SHORT).show();
+                }
 
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
@@ -260,7 +278,7 @@ public class MainActivity extends AppCompatActivity {
                 if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                     // Process the city after clicking Enter
                     String text = editText.getText().toString();
-                    getCityLatLon(text);
+                    getCurrentWeather(text);
 //                    SwitchUIVisibility(true);
                     return true;
                 }

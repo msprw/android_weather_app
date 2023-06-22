@@ -21,7 +21,7 @@ public class OWM {
     }
 
     public static void setCity_link(String cityName) {
-        city_link = "https://api.openweathermap.org/data/2.5/weather?&lang=pl&q=" + cityName + "&appid=eeb8b40367eee691683e5a079e2fa695";
+        city_link = "https://api.openweathermap.org/data/2.5/weather?&lang=pl&units=metric&q=" + cityName + "&appid=eeb8b40367eee691683e5a079e2fa695";
 
     }
 
