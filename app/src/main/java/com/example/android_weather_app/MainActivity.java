@@ -24,9 +24,12 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -48,18 +51,29 @@ public class MainActivity extends AppCompatActivity {
     private TextView updated_at_static;
     private TextView sunrise_txt;
     private TextView sunset_txt;
+//    private TextView tomorrow_txt;
+//    private TextView tomorrow2_txt;
+//    private TextView tomorrow3_txt;
+//    private TextView tomorrow_txt_static;
+//    private TextView tomorrow2_txt_static;
+//    private TextView tomorrow3_txt_static;
     private ImageView condition_img;
     private ImageView pressure_img;
     private ImageView wind_img;
     private ImageView humidity_img;
     private ImageView temp_min_img;
     private ImageView temp_max_img;
+//    private ImageView tomorrow_img;
+//    private ImageView tomorrow_img2;
+//    private ImageView tomorrow_img3;
     private RelativeLayout temp_layout;
     private LinearLayout air_layout;
-
+//    private LinearLayout forecast_layout;
+    private ArrayList<Weather> forecast;
     private EditText editText;
     private ImageView refresh;
     private Weather currentWeather = new Weather();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +99,8 @@ public class MainActivity extends AppCompatActivity {
             try {
                 City.lat = response.getJSONObject("coord").getString("lat");
                 City.lon = response.getJSONObject("coord").getString("lon");
+
+                OWM.setForecast_link(City.lat, City.lon);
 
                 currentWeather.setSunrise(response.getJSONObject("sys").getLong("sunrise"));
                 currentWeather.setSunset(response.getJSONObject("sys").getLong("sunset"));
@@ -115,10 +131,11 @@ public class MainActivity extends AppCompatActivity {
                 imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
 
                 City.name = cityName;
+
                 UpdateInfo();
                 SwitchUIVisibility(true);
+//                getWeatherForecast();
 
-//                getCurrentWeather(City.name);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -137,37 +154,48 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    @SuppressLint("DefaultLocale")
-//    private void getWeatherForecast(String cityName)
-//    {
-//        OWM url = new OWM();
-//        RequestQueue requestQueue = Volley.newRequestQueue(this);
-//         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url.getForecast_link(), null, response -> {
-//            try{
-//                update_time = (System.currentTimeMillis() / 1000);
-//                updated_at = new SimpleDateFormat("EEEE hh:mm a", Locale.getDefault()).format(new Date(update_time * 1000));
-//                sunrise = response.getJSONArray("daily").getJSONObject(0).getLong("sunrise");
-//                sunset = response.getJSONArray("daily").getJSONObject(0).getLong("sunset");
-//                desc = response.getJSONObject("current").getJSONArray("weather").getJSONObject(0).getString("description");
-//                icon = response.getJSONObject("current").getJSONArray("weather").getJSONObject(0).getString("icon");
-//                OWM.setIcon_link(icon);
-//
-//                temp = String.format("%.1f", response.getJSONObject("current").getDouble("temp"));
-//                temp_min = String.format("%.1f", response.getJSONArray("daily").getJSONObject(0).getJSONObject("temp").getDouble("min"));
-//                temp_max = String.format("%.1f", response.getJSONArray("daily").getJSONObject(0).getJSONObject("temp").getDouble("max"));
-//                pressure = response.getJSONArray("daily").getJSONObject(0).getString("pressure");
-//                wind_speed = response.getJSONArray("daily").getJSONObject(0).getString("wind_speed");
-//                humidity = response.getJSONArray("daily").getJSONObject(0).getString("humidity");
-//                City.name = cityName;
-//                UpdateInfo();
-//                SwitchUIVisibility(true);
-////                Toast.makeText(this, "Updated at: "+ updated_at, Toast.LENGTH_SHORT).show();
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//        }, error -> Toast.makeText(this, "Wystąpił błąd przy pobieraniu danych pogodowych!", Toast.LENGTH_SHORT).show());
-//        requestQueue.add(jsonObjectRequest);
-//    }
+    @SuppressLint("DefaultLocale")
+    private void getWeatherForecast()
+    {
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, OWM.getForecast_link(), null, response -> {
+            try{
+                forecast = new ArrayList<>();
+                JSONArray dayArray = response.getJSONArray("daily");
+
+                for(int i = 0; i < dayArray.length(); i++) {
+
+                    Weather day = new Weather();
+                    JSONObject dayObject = dayArray.getJSONObject(i);
+
+                    day.setTemp(dayObject.getJSONObject("temp").getString("day"));
+                    day.setTemp_min(dayObject.getJSONObject("temp").getString("min"));
+                    day.setTemp_max(dayObject.getJSONObject("temp").getString("max"));
+                    day.setUpdated_at(dayObject.getLong("dt"));
+                    day.setPressure(dayObject.getString("pressure"));
+                    day.setHumidity(dayObject.getString("humidity"));
+                    day.setSunrise(dayObject.getLong("sunrise"));
+                    day.setSunset(dayObject.getLong("sunset"));
+                    day.setWind_speed(dayObject.getString("wind_speed"));
+                    day.setWind_direction(dayObject.getDouble("wind_deg"));
+                    day.setIcon(dayObject.getJSONArray("weather").getJSONObject(0).getString("icon"));
+                    day.setDesc(dayObject.getJSONArray("weather").getJSONObject(0).getString("description"));
+                    day.setWeather_id(dayObject.getJSONArray("weather").getJSONObject(0).getInt("id"));
+                    Toast.makeText(this, "Twoj szczesliwy numerek nr "+ i + " to: " + day.getTemp(), Toast.LENGTH_SHORT).show();
+
+                    forecast.add(day);
+
+//                    UpdateForecast();
+
+                }
+                // ustawić textview że dane pogodowe są dostępne
+            } catch (JSONException e) {
+                e.printStackTrace();
+                //ustawić, że dane pogodowe nie są dostępne
+            }
+        }, error -> Toast.makeText(this, "Wystąpił błąd przy pobieraniu danych pogodowych!", Toast.LENGTH_SHORT).show());
+        requestQueue.add(jsonObjectRequest);
+    }
     private void UpdateInfo()
     {
         city_txt.setText(City.name);
@@ -184,6 +212,28 @@ public class MainActivity extends AppCompatActivity {
         sunset_txt.setText(new SimpleDateFormat("hh:mm a", Locale.getDefault()).format(new Date(currentWeather.getSunset() * 1000)));
         Picasso.with(this).load(OWM.getIcon_link()).into(condition_img);
     }
+
+//    private void UpdateForecast()
+//    {
+//        Weather temp = new Weather();
+//        temp = forecast.get(1);
+//        tomorrow_txt_static.setText(new SimpleDateFormat("EEEE", Locale.getDefault()).format(new Date(temp.getUpdated_at() * 1000)));
+//        tomorrow_txt.setText(temp.getTemp());
+//        OWM.setIcon_link(temp.getIcon());
+//        Picasso.with(this).load(OWM.getIcon_link()).into(tomorrow_img);
+//
+//        temp = forecast.get(2);
+//        tomorrow2_txt_static.setText(new SimpleDateFormat("EEEE", Locale.getDefault()).format(new Date(temp.getUpdated_at() * 1000)));
+//        tomorrow2_txt.setText(temp.getTemp());
+//        OWM.setIcon_link(temp.getIcon());
+//        Picasso.with(this).load(OWM.getIcon_link()).into(tomorrow_img2);
+//
+//        temp = forecast.get(3);
+//        tomorrow3_txt_static.setText(new SimpleDateFormat("EEEE", Locale.getDefault()).format(new Date(temp.getUpdated_at() * 1000)));
+//        tomorrow3_txt.setText(temp.getTemp());
+//        OWM.setIcon_link(temp.getIcon());
+//        Picasso.with(this).load(OWM.getIcon_link()).into(tomorrow_img3);
+//    }
 
     private void InitializeUI(){
         temp_layout = findViewById(R.id.temp_layout);
@@ -211,11 +261,22 @@ public class MainActivity extends AppCompatActivity {
         updated_at_static = findViewById(R.id.id_updated_at_static);
         sunrise_txt = findViewById(R.id.id_sunrise_txt);
         sunset_txt = findViewById(R.id.id_sunset_txt);
+//        tomorrow_txt = findViewById(R.id.id_tomorrow_txt);
+//        tomorrow2_txt = findViewById(R.id.id_tomorrow_txt2);
+//        tomorrow3_txt = findViewById(R.id.id_tomorrow_txt3);
+//        tomorrow_img = findViewById(R.id.ic_tomorrow);
+//        tomorrow_img2 = findViewById(R.id.ic_tomorrow_2);
+//        tomorrow_img3 = findViewById(R.id.ic_tomorrow_3);
+//        tomorrow_txt_static = findViewById(R.id.id_tomorrow_txt_static);
+//        tomorrow2_txt_static = findViewById(R.id.id_tomorrow_txt_static2);
+//        tomorrow3_txt_static = findViewById(R.id.id_tomorrow_txt_static3);
+//        forecast_layout = findViewById(R.id.id_forecast_list);
     }
     private void SwitchUIVisibility(boolean state){
         if(!state) {
             temp_layout.setVisibility(View.INVISIBLE);
             air_layout.setVisibility(View.INVISIBLE);
+//            forecast_layout.setVisibility(View.INVISIBLE);
             city_txt.setVisibility(View.INVISIBLE);
             wind_txt.setVisibility(View.INVISIBLE);
             temp_txt.setVisibility(View.INVISIBLE);
@@ -235,6 +296,17 @@ public class MainActivity extends AppCompatActivity {
             wind_static.setVisibility(View.INVISIBLE);
             humidity_static.setVisibility(View.INVISIBLE);
             updated_at_static.setVisibility(View.INVISIBLE);
+//            tomorrow_txt.setVisibility(View.INVISIBLE);
+//            tomorrow2_txt.setVisibility(View.INVISIBLE);
+//            tomorrow3_txt.setVisibility(View.INVISIBLE);
+//            tomorrow_img.setVisibility(View.INVISIBLE);
+//            tomorrow_img2.setVisibility(View.INVISIBLE);
+//            tomorrow_img3.setVisibility(View.INVISIBLE);
+//            tomorrow_txt_static.setVisibility(View.INVISIBLE);
+//            tomorrow2_txt_static.setVisibility(View.INVISIBLE);
+//            tomorrow3_txt_static.setVisibility(View.INVISIBLE);
+
+
         } else {
             temp_layout.setVisibility(View.VISIBLE);
             air_layout.setVisibility(View.VISIBLE);
@@ -257,6 +329,16 @@ public class MainActivity extends AppCompatActivity {
             wind_static.setVisibility(View.VISIBLE);
             humidity_static.setVisibility(View.VISIBLE);
             updated_at_static.setVisibility(View.VISIBLE);
+//            tomorrow_txt.setVisibility(View.VISIBLE);
+//            tomorrow2_txt.setVisibility(View.VISIBLE);
+//            tomorrow3_txt.setVisibility(View.VISIBLE);
+//            tomorrow_img.setVisibility(View.VISIBLE);
+//            tomorrow_img2.setVisibility(View.VISIBLE);
+//            tomorrow_img3.setVisibility(View.VISIBLE);
+//            tomorrow_txt_static.setVisibility(View.VISIBLE);
+//            tomorrow2_txt_static.setVisibility(View.VISIBLE);
+//            tomorrow3_txt_static.setVisibility(View.VISIBLE);
+//            forecast_layout.setVisibility(View.VISIBLE);
         }
     }
 

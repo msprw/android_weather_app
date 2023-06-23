@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="200dp"
+    android:layout_width="382dp"
     android:layout_height="160dp"
     android:background="@drawable/rounded_background">
 
     <RelativeLayout
-        android:id="@+id/id_forecast_layout"
+        android:id="@+id/day_relative_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingHorizontal="6dp"
@@ -13,7 +13,7 @@
         android:visibility="visible">
 
         <RelativeLayout
-            android:id="@+id/id_day_txt"
+            android:id="@+id/top_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp">
@@ -28,11 +28,11 @@
                 android:textSize="14sp" />
 
             <TextView
-                android:id="@+id/id_time_txt"
+                android:id="@+id/day_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:text="time"
+                android:text=""
                 android:textAllCaps="true"
                 android:textColor="@color/white"
                 android:textSize="14sp" />
@@ -42,7 +42,7 @@
             android:id="@+id/center_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/id_day_txt"
+            android:layout_below="@id/top_layout"
             android:layout_marginStart="4dp">
 
             <TextView
@@ -58,10 +58,10 @@
 
             <ImageView
                 android:id="@+id/day_icon"
-                android:layout_width="50dp"
+                android:layout_width="199dp"
                 android:layout_height="50dp"
-                android:layout_marginStart="45dp"
-                android:layout_marginEnd="45dp"
+                android:layout_marginStart="62dp"
+                android:layout_marginEnd="61dp"
                 android:layout_toStartOf="@id/day_max_temp"
                 android:layout_toEndOf="@id/day_min_temp" />
 
@@ -120,7 +120,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/id_day_pressure"
+                    android:id="@+id/day_pressure"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="hPa"
@@ -128,7 +128,7 @@
                     android:textSize="14sp" />
 
                 <TextView
-                    android:id="@+id/id_day_wind"
+                    android:id="@+id/day_wind"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="km/h"
@@ -136,7 +136,7 @@
                     android:textSize="14sp" />
 
                 <TextView
-                    android:id="@+id/id_day_humidity"
+                    android:id="@+id/day_humidity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="%"

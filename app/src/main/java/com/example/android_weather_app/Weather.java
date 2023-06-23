@@ -1,10 +1,10 @@
 package com.example.android_weather_app;
 
 public class Weather {
-    private long sunrise, sunset;
+    private long sunrise, sunset, updated_at;
     private int weather_id;
     private double wind_direction;
-    private String icon, updated_at, desc, temp, temp_min, temp_max, pressure, wind_speed, humidity;
+    private String icon, desc, temp, temp_min, temp_max, pressure, wind_speed, humidity;
 
     public Weather() {
         this.sunrise = 0;
@@ -12,7 +12,7 @@ public class Weather {
         this.weather_id = 0;
         this.wind_direction = 0.0;
         this.icon = "";
-        this.updated_at = "";
+        this.updated_at = 0;
         this.desc = "";
         this.temp = "";
         this.temp_min = "";
@@ -22,7 +22,7 @@ public class Weather {
         this.humidity = "";
     }
 
-    public Weather(long sunrise, long sunset, int weather_id, double wind_direction, String icon, String updated_at, String desc, String temp, String temp_min, String temp_max, String pressure, String wind_speed, String humidity) {
+    public Weather(long sunrise, long sunset, int weather_id, double wind_direction, String icon, long updated_at, String desc, String temp, String temp_min, String temp_max, String pressure, String wind_speed, String humidity) {
         this.sunrise = sunrise;
         this.sunset = sunset;
         this.weather_id = weather_id;
@@ -78,11 +78,11 @@ public class Weather {
         this.icon = icon;
     }
 
-    public String getUpdated_at() {
+    public long getUpdated_at() {
         return updated_at;
     }
 
-    public void setUpdated_at(String updated_at) {
+    public void setUpdated_at(long updated_at) {
         this.updated_at = updated_at;
     }
 
