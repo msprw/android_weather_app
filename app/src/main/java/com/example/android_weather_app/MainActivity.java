@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView wind_static;
     private TextView humidity_static;
     private TextView updated_at_static;
+    private TextView sunrise_txt;
+    private TextView sunset_txt;
     private ImageView condition_img;
     private ImageView pressure_img;
     private ImageView wind_img;
@@ -178,6 +180,8 @@ public class MainActivity extends AppCompatActivity {
         condition_txt.setText(currentWeather.getDesc().substring(0,1).toUpperCase()+ currentWeather.getDesc().substring(1));
         updated_at_txt.setText(updated_at);
         wind_img.setRotation(Math.round(currentWeather.getWind_direction()));
+        sunrise_txt.setText(new SimpleDateFormat("hh:mm a", Locale.getDefault()).format(new Date(currentWeather.getSunrise() * 1000)));
+        sunset_txt.setText(new SimpleDateFormat("hh:mm a", Locale.getDefault()).format(new Date(currentWeather.getSunset() * 1000)));
         Picasso.with(this).load(OWM.getIcon_link()).into(condition_img);
     }
 
@@ -205,6 +209,8 @@ public class MainActivity extends AppCompatActivity {
         wind_static = findViewById(R.id.id_wind_static);
         humidity_static = findViewById(R.id.id_humidity_static);
         updated_at_static = findViewById(R.id.id_updated_at_static);
+        sunrise_txt = findViewById(R.id.id_sunrise_txt);
+        sunset_txt = findViewById(R.id.id_sunset_txt);
     }
     private void SwitchUIVisibility(boolean state){
         if(!state) {

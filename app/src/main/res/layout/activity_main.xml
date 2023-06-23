@@ -189,7 +189,7 @@
             android:layout_height="90dp">
 
             <LinearLayout
-                android:layout_width="232dp"
+                android:layout_width="300dp"
                 android:layout_height="25dp"
                 android:layout_marginTop="0dp"
                 android:alpha=".85"
@@ -243,6 +243,49 @@
                         android:textColor="@color/white"
                         android:textSize="16sp" />
                 </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="300dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="32dp"
+                android:alpha=".85"
+                android:gravity="center"
+                android:paddingHorizontal="16dp"
+                android:weightSum="2">
+
+                <ImageView
+                    android:id="@+id/ic_sunrise_icon"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/sunrise_icon" />
+
+                <TextView
+                    android:id="@+id/id_sunrise_txt"
+                    android:layout_width="82dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:text="sunrise"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/ic_sunset_icon"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/sunset_icon" />
+
+                <TextView
+                    android:id="@+id/id_sunset_txt"
+                    android:layout_width="82dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:text="sunset"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+
             </LinearLayout>
 
         </RelativeLayout>
@@ -353,5 +396,6 @@
                 android:textSize="14sp" />
         </LinearLayout>
     </LinearLayout>
+
 
 </LinearLayout>
