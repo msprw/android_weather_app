@@ -2,12 +2,12 @@ package com.example.android_weather_app;
 
 public class OWM {
     private static String city_link;
-    private String weather_link;
+    private String forecast_link;
     private static String icon_link;
 
     public OWM() {
         this.city_link = "";
-        this.weather_link = "https://api.openweathermap.org/data/2.5/onecall?exclude=minutely&lang=pl&units=metric&lat="
+        this.forecast_link = "https://api.openweathermap.org/data/2.5/onecall?exclude=minutely&lang=pl&units=metric&lat="
                 + City.lat + "&lon=" + City.lon + "&appid=eeb8b40367eee691683e5a079e2fa695";
         this.icon_link = "";
     }
@@ -16,8 +16,8 @@ public class OWM {
         return city_link;
     }
 
-    public String getWeather_link() {
-        return weather_link;
+    public String getForecast_link() {
+        return forecast_link;
     }
 
     public static void setCity_link(String cityName) {
@@ -34,7 +34,7 @@ public class OWM {
         return icon_link;
     }
 
-    public void setWeather_link(String weather_link) {
-        this.weather_link = weather_link;
+    public void setForecast_link(String forecast_link) {
+        this.forecast_link = forecast_link;
     }
 }

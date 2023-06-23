@@ -2,6 +2,7 @@ package com.example.android_weather_app;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -30,11 +31,8 @@ import java.util.Date;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-    private long update_time, sunrise, sunset = 0;
-    private int weather_id = 0;
-    private double wind_direction;
-    private String icon, updated_at, desc, temp, temp_min, temp_max, pressure, wind_speed, humidity = "";
-
+    private long update_time;
+    private String updated_at;
     private TextView city_txt;
     private TextView wind_txt;
     private TextView temp_txt;
@@ -59,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText editText;
     private ImageView refresh;
+    private Weather currentWeather = new Weather();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void getCurrentWeather(String cityName)
     {
+
         OWM.setCity_link(cityName);
         RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
 
@@ -84,23 +84,23 @@ public class MainActivity extends AppCompatActivity {
                 City.lat = response.getJSONObject("coord").getString("lat");
                 City.lon = response.getJSONObject("coord").getString("lon");
 
-                sunrise = response.getJSONObject("sys").getLong("sunrise");
-                sunset = response.getJSONObject("sys").getLong("sunset");
+                currentWeather.setSunrise(response.getJSONObject("sys").getLong("sunrise"));
+                currentWeather.setSunset(response.getJSONObject("sys").getLong("sunset"));
 
-                wind_speed = response.getJSONObject("wind").getString("speed");
-                wind_direction = response.getJSONObject("wind").getDouble("deg");
+                currentWeather.setWind_speed(response.getJSONObject("wind").getString("speed"));
+                currentWeather.setWind_direction(response.getJSONObject("wind").getDouble("deg"));
 
-                pressure = response.getJSONObject("main").getString("pressure");
-                humidity = response.getJSONObject("main").getString("humidity");
-                temp = String.format("%.1f", response.getJSONObject("main").getDouble("temp"));
-                temp_min = String.format("%.1f", response.getJSONObject("main").getDouble("temp_min"));
-                temp_max = String.format("%.1f", response.getJSONObject("main").getDouble("temp_max"));
+                currentWeather.setHumidity(response.getJSONObject("main").getString("humidity"));
+                currentWeather.setPressure(response.getJSONObject("main").getString("pressure"));
+                currentWeather.setTemp(String.format("%.1f", response.getJSONObject("main").getDouble("temp")));
+                currentWeather.setTemp_min(String.format("%.1f", response.getJSONObject("main").getDouble("temp_min")));
+                currentWeather.setTemp_max(String.format("%.1f", response.getJSONObject("main").getDouble("temp_max")));
 
-                desc = response.getJSONArray("weather").getJSONObject(0).getString("description");
-                icon = response.getJSONArray("weather").getJSONObject(0).getString("icon");
+                currentWeather.setDesc(response.getJSONArray("weather").getJSONObject(0).getString("description"));
+                currentWeather.setIcon(response.getJSONArray("weather").getJSONObject(0).getString("icon"));
 
                 //fetch an icon from OWM
-                OWM.setIcon_link(icon);
+                OWM.setIcon_link(currentWeather.getIcon());
 
                 update_time = (System.currentTimeMillis());
                 updated_at = new SimpleDateFormat("EEEE hh:mm a", Locale.getDefault()).format(new Date(update_time));
@@ -136,11 +136,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
 //    @SuppressLint("DefaultLocale")
-//    private void getCurrentWeather(String cityName)
+//    private void getWeatherForecast(String cityName)
 //    {
 //        OWM url = new OWM();
 //        RequestQueue requestQueue = Volley.newRequestQueue(this);
-//         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url.getWeather_link(), null, response -> {
+//         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url.getForecast_link(), null, response -> {
 //            try{
 //                update_time = (System.currentTimeMillis() / 1000);
 //                updated_at = new SimpleDateFormat("EEEE hh:mm a", Locale.getDefault()).format(new Date(update_time * 1000));
@@ -169,15 +169,15 @@ public class MainActivity extends AppCompatActivity {
     private void UpdateInfo()
     {
         city_txt.setText(City.name);
-        wind_txt.setText(wind_speed+"m/s");
-        temp_txt.setText(temp + "\u2103");
-        temp_min_txt.setText(temp_min +"\u2103");
-        temp_max_txt.setText(temp_max +"\u2103");
-        pressure_txt.setText(pressure + "hPa");
-        humid_txt.setText(humidity + "%");
-        condition_txt.setText(desc.substring(0,1).toUpperCase()+ desc.substring(1));
+        wind_txt.setText(currentWeather.getWind_speed() + "m/s");
+        temp_txt.setText(currentWeather.getTemp() + "\u2103");
+        temp_min_txt.setText(currentWeather.getTemp_min() +"\u2103");
+        temp_max_txt.setText(currentWeather.getTemp_max() +"\u2103");
+        pressure_txt.setText(currentWeather.getPressure() + "hPa");
+        humid_txt.setText(currentWeather.getHumidity() + "%");
+        condition_txt.setText(currentWeather.getDesc().substring(0,1).toUpperCase()+ currentWeather.getDesc().substring(1));
         updated_at_txt.setText(updated_at);
-        wind_img.setRotation(Math.round(wind_direction));
+        wind_img.setRotation(Math.round(currentWeather.getWind_direction()));
         Picasso.with(this).load(OWM.getIcon_link()).into(condition_img);
     }
 

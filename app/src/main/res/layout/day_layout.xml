@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="185dp"
+    android:layout_width="382dp"
     android:layout_height="160dp"
-    android:background="@drawable/day_block_bg">
+    android:background="@drawable/rounded_background">
 
     <RelativeLayout
         android:id="@+id/day_relative_layout"
@@ -58,8 +58,10 @@
 
             <ImageView
                 android:id="@+id/day_icon"
-                android:layout_width="50dp"
+                android:layout_width="199dp"
                 android:layout_height="50dp"
+                android:layout_marginStart="62dp"
+                android:layout_marginEnd="61dp"
                 android:layout_toStartOf="@id/day_max_temp"
                 android:layout_toEndOf="@id/day_min_temp" />
 
