@@ -60,24 +60,15 @@ public class MainActivity extends AppCompatActivity {
     private TextView updated_at_static;
     private TextView sunrise_txt;
     private TextView sunset_txt;
-//    private TextView tomorrow_txt;
-//    private TextView tomorrow2_txt;
-//    private TextView tomorrow3_txt;
-//    private TextView tomorrow_txt_static;
-//    private TextView tomorrow2_txt_static;
-//    private TextView tomorrow3_txt_static;
     private ImageView condition_img;
     private ImageView pressure_img;
     private ImageView wind_img;
     private ImageView humidity_img;
     private ImageView temp_min_img;
     private ImageView temp_max_img;
-//    private ImageView tomorrow_img;
-//    private ImageView tomorrow_img2;
-//    private ImageView tomorrow_img3;
     private RelativeLayout temp_layout;
     private LinearLayout air_layout;
-//    private LinearLayout forecast_layout;
+    private LinearLayout forecast_layout;
     private ArrayList<Weather> forecast;
     private EditText editText;
     private ImageView refresh;
@@ -102,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
             ShowKeyDialog();
 
     }
-
 
     private void getCurrentWeather(String cityName)
     {
@@ -136,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
                 OWM.setIcon_link(currentWeather.getIcon());
 
                 update_time = (System.currentTimeMillis());
-                updated_at = new SimpleDateFormat("EEEE hh:mm a", Locale.getDefault()).format(new Date(update_time));
+                updated_at = new SimpleDateFormat("EEEE HH:mm", new Locale("pl", "PL")).format(new Date(update_time));
 
                 //After a valid city has been passed, clear the search bar and hide the keyboard
                 EditText editText = findViewById(R.id.id_searched_city);
@@ -196,20 +186,15 @@ public class MainActivity extends AppCompatActivity {
                     day.setIcon(dayObject.getJSONArray("weather").getJSONObject(0).getString("icon"));
                     day.setDesc(dayObject.getJSONArray("weather").getJSONObject(0).getString("description"));
                     day.setWeather_id(dayObject.getJSONArray("weather").getJSONObject(0).getInt("id"));
-                    Toast.makeText(this, "Twoj szczesliwy numerek nr "+ i + " to: " + day.getTemp(), Toast.LENGTH_SHORT).show();
 
                     forecast.add(day);
-
-                    small_day_forecast.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
-                    small_day_forecast.setAdapter(new ForecastAdapter(getApplicationContext(), forecast));
-
-//                    UpdateForecast();
-
                 }
-                // ustawić textview że dane pogodowe są dostępne
+                small_day_forecast.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
+                small_day_forecast.setAdapter(new ForecastAdapter(getApplicationContext(), forecast));
+                forecast_layout.setVisibility(View.VISIBLE);
             } catch (JSONException e) {
                 e.printStackTrace();
-                //ustawić, że dane pogodowe nie są dostępne
+                //optional toast about the error
             }
         }, error -> Toast.makeText(this, "Wystąpił błąd przy pobieraniu danych pogodowych!", Toast.LENGTH_SHORT).show());
         requestQueue.add(jsonObjectRequest);
@@ -226,8 +211,8 @@ public class MainActivity extends AppCompatActivity {
         condition_txt.setText(currentWeather.getDesc().substring(0,1).toUpperCase()+ currentWeather.getDesc().substring(1));
         updated_at_txt.setText(updated_at);
         wind_img.setRotation(Math.round(currentWeather.getWind_direction()));
-        sunrise_txt.setText(new SimpleDateFormat("hh:mm a", Locale.getDefault()).format(new Date(currentWeather.getSunrise() * 1000)));
-        sunset_txt.setText(new SimpleDateFormat("hh:mm a", Locale.getDefault()).format(new Date(currentWeather.getSunset() * 1000)));
+        sunrise_txt.setText(new SimpleDateFormat("HH:mm", new Locale("pl", "PL")).format(new Date(currentWeather.getSunrise() * 1000)));
+        sunset_txt.setText(new SimpleDateFormat("HH:mm", new Locale("pl", "PL")).format(new Date(currentWeather.getSunset() * 1000)));
         Picasso.with(this).load(OWM.getIcon_link()).into(condition_img);
     }
 
@@ -260,12 +245,13 @@ public class MainActivity extends AppCompatActivity {
         sunset_txt = findViewById(R.id.id_sunset_txt);
         api_key = findViewById(R.id.ic_api_key);
         small_day_forecast = findViewById(R.id.forecast);
+        forecast_layout = findViewById(R.id.id_forecast_bar);
     }
     private void SwitchUIVisibility(boolean state){
         if(!state) {
             temp_layout.setVisibility(View.INVISIBLE);
             air_layout.setVisibility(View.INVISIBLE);
-//            forecast_layout.setVisibility(View.INVISIBLE);
+            forecast_layout.setVisibility(View.INVISIBLE);
             city_txt.setVisibility(View.INVISIBLE);
             wind_txt.setVisibility(View.INVISIBLE);
             temp_txt.setVisibility(View.INVISIBLE);
@@ -307,7 +293,6 @@ public class MainActivity extends AppCompatActivity {
             wind_static.setVisibility(View.VISIBLE);
             humidity_static.setVisibility(View.VISIBLE);
             updated_at_static.setVisibility(View.VISIBLE);
-//            forecast_layout.setVisibility(View.VISIBLE);
         }
     }
 

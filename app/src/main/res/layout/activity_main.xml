@@ -21,21 +21,30 @@
         <RelativeLayout
             android:id="@+id/search_parent"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:background="@drawable/rounded_background"
             android:gravity="center"
             tools:ignore="UselessParent">
 
+            <ImageView
+                android:id="@+id/id_refresh"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="12dp"
+                android:src="@drawable/ic_refresh" />
 
             <EditText
                 android:id="@+id/id_searched_city"
-                android:layout_width="250dp"
+                android:layout_width="247dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="50dp"
+                android:layout_alignParentEnd="true"
                 android:layout_marginLeft="12dp"
                 android:layout_marginTop="12dp"
-                android:layout_marginEnd="12dp"
+
+                android:layout_marginEnd="42dp"
                 android:layout_marginRight="12dp"
                 android:layout_marginBottom="12dp"
                 android:background="@null"
@@ -51,22 +60,14 @@
                 android:textSize="18sp" />
 
             <ImageView
-                android:id="@+id/id_refresh"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="12dp"
-                android:src="@drawable/ic_refresh" />
-
-            <ImageView
                 android:id="@+id/ic_api_key"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="12dp"
-                android:layout_marginEnd="300dp"
+                android:layout_marginEnd="287dp"
                 android:src="@drawable/key_icon" />
+
         </RelativeLayout>
 
     </RelativeLayout>
@@ -413,7 +414,7 @@
         android:gravity="center">
 
         <LinearLayout
-            android:id="@+id/id_forest_bar"
+            android:id="@+id/id_forecast_bar"
             android:layout_width="match_parent"
             android:layout_height="92dp"
             android:layout_weight="1"
@@ -424,9 +425,9 @@
             android:weightSum="3">
 
             <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/forecast"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/forecast">
+                android:layout_height="wrap_content">
 
             </androidx.recyclerview.widget.RecyclerView>
         </LinearLayout>
