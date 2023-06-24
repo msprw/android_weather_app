@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
                 forecast = new ArrayList<>();
                 JSONArray dayArray = response.getJSONArray("daily");
 
-                for(int i = 0; i < dayArray.length(); i++) {
+                for(int i = 1; i < dayArray.length(); i++) {
 
                     Weather day = new Weather();
                     JSONObject dayObject = dayArray.getJSONObject(i);
@@ -231,28 +231,6 @@ public class MainActivity extends AppCompatActivity {
         Picasso.with(this).load(OWM.getIcon_link()).into(condition_img);
     }
 
-//    private void UpdateForecast()
-//    {
-//        Weather temp = new Weather();
-//        temp = forecast.get(1);
-//        tomorrow_txt_static.setText(new SimpleDateFormat("EEEE", Locale.getDefault()).format(new Date(temp.getUpdated_at() * 1000)));
-//        tomorrow_txt.setText(temp.getTemp());
-//        OWM.setIcon_link(temp.getIcon());
-//        Picasso.with(this).load(OWM.getIcon_link()).into(tomorrow_img);
-//
-//        temp = forecast.get(2);
-//        tomorrow2_txt_static.setText(new SimpleDateFormat("EEEE", Locale.getDefault()).format(new Date(temp.getUpdated_at() * 1000)));
-//        tomorrow2_txt.setText(temp.getTemp());
-//        OWM.setIcon_link(temp.getIcon());
-//        Picasso.with(this).load(OWM.getIcon_link()).into(tomorrow_img2);
-//
-//        temp = forecast.get(3);
-//        tomorrow3_txt_static.setText(new SimpleDateFormat("EEEE", Locale.getDefault()).format(new Date(temp.getUpdated_at() * 1000)));
-//        tomorrow3_txt.setText(temp.getTemp());
-//        OWM.setIcon_link(temp.getIcon());
-//        Picasso.with(this).load(OWM.getIcon_link()).into(tomorrow_img3);
-//    }
-
     @SuppressLint("WrongViewCast")
     private void InitializeUI(){
         temp_layout = findViewById(R.id.temp_layout);
@@ -281,18 +259,7 @@ public class MainActivity extends AppCompatActivity {
         sunrise_txt = findViewById(R.id.id_sunrise_txt);
         sunset_txt = findViewById(R.id.id_sunset_txt);
         api_key = findViewById(R.id.ic_api_key);
-
         small_day_forecast = findViewById(R.id.forecast);
-//        tomorrow_txt = findViewById(R.id.id_tomorrow_txt);
-//        tomorrow2_txt = findViewById(R.id.id_tomorrow_txt2);
-//        tomorrow3_txt = findViewById(R.id.id_tomorrow_txt3);
-//        tomorrow_img = findViewById(R.id.ic_tomorrow);
-//        tomorrow_img2 = findViewById(R.id.ic_tomorrow_2);
-//        tomorrow_img3 = findViewById(R.id.ic_tomorrow_3);
-//        tomorrow_txt_static = findViewById(R.id.id_tomorrow_txt_static);
-//        tomorrow2_txt_static = findViewById(R.id.id_tomorrow_txt_static2);
-//        tomorrow3_txt_static = findViewById(R.id.id_tomorrow_txt_static3);
-//        forecast_layout = findViewById(R.id.id_forecast_list);
     }
     private void SwitchUIVisibility(boolean state){
         if(!state) {
@@ -318,17 +285,6 @@ public class MainActivity extends AppCompatActivity {
             wind_static.setVisibility(View.INVISIBLE);
             humidity_static.setVisibility(View.INVISIBLE);
             updated_at_static.setVisibility(View.INVISIBLE);
-//            tomorrow_txt.setVisibility(View.INVISIBLE);
-//            tomorrow2_txt.setVisibility(View.INVISIBLE);
-//            tomorrow3_txt.setVisibility(View.INVISIBLE);
-//            tomorrow_img.setVisibility(View.INVISIBLE);
-//            tomorrow_img2.setVisibility(View.INVISIBLE);
-//            tomorrow_img3.setVisibility(View.INVISIBLE);
-//            tomorrow_txt_static.setVisibility(View.INVISIBLE);
-//            tomorrow2_txt_static.setVisibility(View.INVISIBLE);
-//            tomorrow3_txt_static.setVisibility(View.INVISIBLE);
-
-
         } else {
             temp_layout.setVisibility(View.VISIBLE);
             air_layout.setVisibility(View.VISIBLE);
@@ -351,15 +307,6 @@ public class MainActivity extends AppCompatActivity {
             wind_static.setVisibility(View.VISIBLE);
             humidity_static.setVisibility(View.VISIBLE);
             updated_at_static.setVisibility(View.VISIBLE);
-//            tomorrow_txt.setVisibility(View.VISIBLE);
-//            tomorrow2_txt.setVisibility(View.VISIBLE);
-//            tomorrow3_txt.setVisibility(View.VISIBLE);
-//            tomorrow_img.setVisibility(View.VISIBLE);
-//            tomorrow_img2.setVisibility(View.VISIBLE);
-//            tomorrow_img3.setVisibility(View.VISIBLE);
-//            tomorrow_txt_static.setVisibility(View.VISIBLE);
-//            tomorrow2_txt_static.setVisibility(View.VISIBLE);
-//            tomorrow3_txt_static.setVisibility(View.VISIBLE);
 //            forecast_layout.setVisibility(View.VISIBLE);
         }
     }
