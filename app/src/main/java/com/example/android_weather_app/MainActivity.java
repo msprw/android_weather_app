@@ -4,6 +4,8 @@ import static android.text.TextUtils.isEmpty;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -14,6 +16,7 @@ import android.os.Handler;
 import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
@@ -80,11 +83,12 @@ public class MainActivity extends AppCompatActivity {
     private ImageView refresh;
     private ImageView api_key;
     private Weather currentWeather = new Weather();
+    private RecyclerView small_day_forecast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_main);
 
         InitializeUI();
@@ -145,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
 
                 UpdateInfo();
                 SwitchUIVisibility(true);
-//                getWeatherForecast();
+                getWeatherForecast();
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -179,9 +183,9 @@ public class MainActivity extends AppCompatActivity {
                     Weather day = new Weather();
                     JSONObject dayObject = dayArray.getJSONObject(i);
 
-                    day.setTemp(dayObject.getJSONObject("temp").getString("day"));
-                    day.setTemp_min(dayObject.getJSONObject("temp").getString("min"));
-                    day.setTemp_max(dayObject.getJSONObject("temp").getString("max"));
+                    day.setTemp(String.format("%.1f",dayObject.getJSONObject("temp").getDouble("day")));
+                    day.setTemp_min(String.format("%.1f",dayObject.getJSONObject("temp").getDouble("min")));
+                    day.setTemp_max(String.format("%.1f",dayObject.getJSONObject("temp").getDouble("max")));
                     day.setUpdated_at(dayObject.getLong("dt"));
                     day.setPressure(dayObject.getString("pressure"));
                     day.setHumidity(dayObject.getString("humidity"));
@@ -195,6 +199,9 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(this, "Twoj szczesliwy numerek nr "+ i + " to: " + day.getTemp(), Toast.LENGTH_SHORT).show();
 
                     forecast.add(day);
+
+                    small_day_forecast.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
+                    small_day_forecast.setAdapter(new ForecastAdapter(getApplicationContext(), forecast));
 
 //                    UpdateForecast();
 
@@ -274,6 +281,8 @@ public class MainActivity extends AppCompatActivity {
         sunrise_txt = findViewById(R.id.id_sunrise_txt);
         sunset_txt = findViewById(R.id.id_sunset_txt);
         api_key = findViewById(R.id.ic_api_key);
+
+        small_day_forecast = findViewById(R.id.forecast);
 //        tomorrow_txt = findViewById(R.id.id_tomorrow_txt);
 //        tomorrow2_txt = findViewById(R.id.id_tomorrow_txt2);
 //        tomorrow3_txt = findViewById(R.id.id_tomorrow_txt3);

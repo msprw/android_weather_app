@@ -23,16 +23,14 @@ public class OWM {
 
     public static void setCity_link(String cityName, String key) {
         city_link = "https://api.openweathermap.org/data/2.5/weather?&lang=pl&units=metric&q=" + cityName + "&appid=" + key;
-
     }
 
-    public static void setIcon_link(String icon_id)
-    {
+    public static void setIcon_link(String icon_id) {
         icon_link = "https://openweathermap.org/img/wn/"+icon_id+"@2x.png";
     }
 
     public static void setForecast_link(String lat, String lon, String key) {
         forecast_link = "https://api.openweathermap.org/data/2.5/onecall?exclude=minutely&lang=pl&units=metric&lat="
-                + lat + "&lon=" + lon + "&appid="+ key;
+                + lat + "&lon=" + lon + "&appid=" + key;
     }
 }
