@@ -1,11 +1,17 @@
 package com.example.android_weather_app;
 
+import static android.text.TextUtils.isEmpty;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -72,12 +78,13 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Weather> forecast;
     private EditText editText;
     private ImageView refresh;
+    private ImageView api_key;
     private Weather currentWeather = new Weather();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
         InitializeUI();
@@ -86,13 +93,17 @@ public class MainActivity extends AppCompatActivity {
 
         SetupListeners();
 
+        String api_key = SharedPreferencesManager.getInstance(getApplicationContext()).getAPIKey();
+        if(isEmpty(api_key))
+            ShowKeyDialog();
+
     }
 
 
     private void getCurrentWeather(String cityName)
     {
 
-        OWM.setCity_link(cityName);
+        OWM.setCity_link(cityName, SharedPreferencesManager.getInstance(getApplicationContext()).getAPIKey());
         RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, OWM.getCity_link().toString(), null, response -> {
@@ -100,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
                 City.lat = response.getJSONObject("coord").getString("lat");
                 City.lon = response.getJSONObject("coord").getString("lon");
 
-                OWM.setForecast_link(City.lat, City.lon);
+                OWM.setForecast_link(City.lat, City.lon, SharedPreferencesManager.getInstance(getApplicationContext()).getAPIKey());
 
                 currentWeather.setSunrise(response.getJSONObject("sys").getLong("sunrise"));
                 currentWeather.setSunset(response.getJSONObject("sys").getLong("sunset"));
@@ -235,6 +246,7 @@ public class MainActivity extends AppCompatActivity {
 //        Picasso.with(this).load(OWM.getIcon_link()).into(tomorrow_img3);
 //    }
 
+    @SuppressLint("WrongViewCast")
     private void InitializeUI(){
         temp_layout = findViewById(R.id.temp_layout);
         air_layout = findViewById(R.id.air_layout);
@@ -261,6 +273,7 @@ public class MainActivity extends AppCompatActivity {
         updated_at_static = findViewById(R.id.id_updated_at_static);
         sunrise_txt = findViewById(R.id.id_sunrise_txt);
         sunset_txt = findViewById(R.id.id_sunset_txt);
+        api_key = findViewById(R.id.ic_api_key);
 //        tomorrow_txt = findViewById(R.id.id_tomorrow_txt);
 //        tomorrow2_txt = findViewById(R.id.id_tomorrow_txt2);
 //        tomorrow3_txt = findViewById(R.id.id_tomorrow_txt3);
@@ -342,6 +355,51 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void ShowKeyDialog()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("Klucz API OpenWeather");
+        builder.setMessage("Aby móc korzystać z aplikacji, konieczne jest wprowadzenie swojego klucza API, który mozna wygenerować udając się na stronę OWM");
+        // Ustawienie pola tekstowego w dialogu
+        final EditText editText = new EditText(MainActivity.this);
+        editText.setInputType(InputType.TYPE_CLASS_TEXT); // Typ pola tekstowego (opcjonalne)
+        builder.setView(editText);
+        // Ustawienie przycisku "OK"
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Kod do wykonania po kliknięciu przycisku "OK"
+                String userInput = editText.getText().toString(); // Pobranie tekstu z pola tekstowego
+                if(userInput.length() == 32) {
+                    SharedPreferencesManager.getInstance(getApplicationContext()).setAPIKey(userInput);
+                    Toast.makeText(getApplicationContext(), "klucz API został zapisany!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Nieprawidłowy klucz API!", Toast.LENGTH_SHORT).show();
+                    ShowKeyDialog();
+                }
+            }
+        });
+        // Ustawienie przycisku "Anuluj"
+        builder.setNegativeButton("Anuluj", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Kod do wykonania po kliknięciu przycisku "Anuluj"
+                dialog.cancel(); // Zamknięcie dialogu
+                finish();
+            }
+        });
+
+        // Wyświetlenie dialogu
+        AlertDialog dialog = builder.create();
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                finish();
+            }
+        });
+        dialog.show();
+    }
+
     private void SetupListeners(){
         refresh.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -364,6 +422,45 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        api_key.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Klucz API OpenWeather");
+                // Ustawienie pola tekstowego w dialogu
+                final EditText editText = new EditText(MainActivity.this);
+                editText.setInputType(InputType.TYPE_CLASS_TEXT); // Typ pola tekstowego (opcjonalne)
+                builder.setView(editText);
+                // Ustawienie przycisku "OK"
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Kod do wykonania po kliknięciu przycisku "OK"
+                        String userInput = editText.getText().toString(); // Pobranie tekstu z pola tekstowego
+                        if(userInput.length() == 32) {
+                            SharedPreferencesManager.getInstance(getApplicationContext()).setAPIKey(userInput);
+                            Toast.makeText(getApplicationContext(), "klucz API został zapisany!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Nieprawidłowy klucz API!", Toast.LENGTH_SHORT).show();
+//                            ShowKeyDialog();
+                        }
+                    }
+                });
+                // Ustawienie przycisku "Anuluj"
+                builder.setNegativeButton("Anuluj", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Kod do wykonania po kliknięciu przycisku "Anuluj"
+                        dialog.cancel(); // Zamknięcie dialogu
+                    }
+                });
+
+                // Wyświetlenie dialogu
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
+
         editText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -376,5 +473,6 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
     }
 }
