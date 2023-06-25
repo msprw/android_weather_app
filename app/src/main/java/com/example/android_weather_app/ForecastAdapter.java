@@ -32,7 +32,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<DayViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull DayViewHolder holder, int position) {
-        holder.day_name.setText(new SimpleDateFormat("EEEE", Locale.getDefault()).format(new Date(days.get(position).getUpdated_at() * 1000)));
+        holder.day_name.setText(new SimpleDateFormat("EEEE", new Locale("pl", "PL")).format(new Date(days.get(position).getUpdated_at() * 1000)));
         holder.temp.setText(days.get(position).getTemp() + "\u2103");
         OWM.setIcon_link(days.get(position).getIcon());
         Picasso.with(context).load(OWM.getIcon_link()).into(holder.icon);
