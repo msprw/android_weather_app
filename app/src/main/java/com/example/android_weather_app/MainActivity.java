@@ -8,9 +8,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
@@ -43,6 +48,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
+    private NetworkChangeReceiver networkChangeReceiver;
     private long update_time;
     private String updated_at;
     private TextView city_txt;
@@ -75,12 +81,14 @@ public class MainActivity extends AppCompatActivity {
     private ImageView api_key;
     private Weather currentWeather = new Weather();
     private RecyclerView small_day_forecast;
+    private boolean InternetConnected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_main);
+        networkChangeReceiver = new NetworkChangeReceiver();
 
         InitializeUI();
 
@@ -91,7 +99,31 @@ public class MainActivity extends AppCompatActivity {
         String api_key = SharedPreferencesManager.getInstance(getApplicationContext()).getAPIKey();
         if(isEmpty(api_key))
             ShowKeyDialog();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerNetworkChangeReceiver();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterNetworkChangeReceiver();
+    }
+
+    private void registerNetworkChangeReceiver() {
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(networkChangeReceiver, intentFilter);
+    }
+
+    private void unregisterNetworkChangeReceiver() {
+        if (networkChangeReceiver != null) {
+            unregisterReceiver(networkChangeReceiver);
+            networkChangeReceiver = null;
+        }
     }
 
     private void getCurrentWeather(String cityName)
@@ -150,6 +182,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean searchCity(String cityName) {
+        if(networkChangeReceiver == null || !networkChangeReceiver.getConnStatus(getApplicationContext())){
+            Toast.makeText(this, "Brak połączenia z internetem!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
         if (cityName == null || cityName.isEmpty()) {
             Toast.makeText(this, "Proszę podaj miasto", Toast.LENGTH_SHORT).show();
             return false;
@@ -301,16 +337,16 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setTitle("Klucz API OpenWeather");
         builder.setMessage("Aby móc korzystać z aplikacji, konieczne jest wprowadzenie swojego klucza API, który mozna wygenerować udając się na stronę OWM");
-        // Ustawienie pola tekstowego w dialogu
+
         final EditText editText = new EditText(MainActivity.this);
         editText.setInputType(InputType.TYPE_CLASS_TEXT); // Typ pola tekstowego (opcjonalne)
         builder.setView(editText);
-        // Ustawienie przycisku "OK"
+
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // Kod do wykonania po kliknięciu przycisku "OK"
-                String userInput = editText.getText().toString(); // Pobranie tekstu z pola tekstowego
+
+                String userInput = editText.getText().toString();
                 if(userInput.length() == 32) {
                     SharedPreferencesManager.getInstance(getApplicationContext()).setAPIKey(userInput);
                     Toast.makeText(getApplicationContext(), "klucz API został zapisany!", Toast.LENGTH_SHORT).show();
@@ -320,17 +356,15 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        // Ustawienie przycisku "Anuluj"
+
         builder.setNegativeButton("Anuluj", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // Kod do wykonania po kliknięciu przycisku "Anuluj"
-                dialog.cancel(); // Zamknięcie dialogu
+                dialog.cancel();
                 finish();
             }
         });
 
-        // Wyświetlenie dialogu
         AlertDialog dialog = builder.create();
         dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
@@ -368,35 +402,31 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setTitle("Klucz API OpenWeather");
-                // Ustawienie pola tekstowego w dialogu
+                // create an input in the dialog
                 final EditText editText = new EditText(MainActivity.this);
-                editText.setInputType(InputType.TYPE_CLASS_TEXT); // Typ pola tekstowego (opcjonalne)
+                editText.setInputType(InputType.TYPE_CLASS_TEXT);
                 builder.setView(editText);
-                // Ustawienie przycisku "OK"
+
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // Kod do wykonania po kliknięciu przycisku "OK"
-                        String userInput = editText.getText().toString(); // Pobranie tekstu z pola tekstowego
+                        String userInput = editText.getText().toString();
                         if(userInput.length() == 32) {
                             SharedPreferencesManager.getInstance(getApplicationContext()).setAPIKey(userInput);
                             Toast.makeText(getApplicationContext(), "klucz API został zapisany!", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(getApplicationContext(), "Nieprawidłowy klucz API!", Toast.LENGTH_SHORT).show();
-//                            ShowKeyDialog();
                         }
                     }
                 });
-                // Ustawienie przycisku "Anuluj"
+
                 builder.setNegativeButton("Anuluj", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // Kod do wykonania po kliknięciu przycisku "Anuluj"
-                        dialog.cancel(); // Zamknięcie dialogu
+                        dialog.cancel();
                     }
                 });
 
-                // Wyświetlenie dialogu
                 AlertDialog dialog = builder.create();
                 dialog.show();
             }
@@ -408,7 +438,7 @@ public class MainActivity extends AppCompatActivity {
                 if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                     // Process the city after clicking Enter
                     String text = editText.getText().toString();
-                    getCurrentWeather(text);
+                    searchCity(text);
                     return true;
                 }
                 return false;
